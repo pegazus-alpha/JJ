@@ -1,0 +1,116 @@
+/* styles.css */
+body {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background: linear-gradient(to bottom, #ff9e2c, #ffd777);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-container {
+    background: white;
+    border-radius: 25px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    max-width: 850px;
+    overflow: hidden;
+}
+
+.login-box {
+    display: flex;
+    width: 100%;
+}
+
+.login-form {
+    padding: 2rem;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.login-form h2 {
+    margin-bottom: 1rem;
+    font-size: 24px;
+}
+
+.login-form label {
+    margin-top: 1rem;
+    font-weight: bold;
+}
+
+.login-form input {
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    height: 46px;
+    margin-bottom: 1rem;
+}
+
+.forgot-password {
+    margin-top: 1.2rem;
+    display: flex;
+    justify-content: end;
+}
+
+.forgot-password a {
+    text-decoration: none;
+    color: #ff9e2c;
+}
+
+.btn {
+    width: 100%;
+    background: #ff9e2c;
+    color: white;
+    padding: 0.75rem;
+    margin-top: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #e68a00;
+}
+
+.register-link {
+    margin-top: 1rem;
+}
+
+.register-link a {
+    text-decoration: none;
+    color: #ff9e2c;
+}
+
+.login-image {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.login-image img {
+    max-width: 100%;
+    height: auto;
+}
+
+.toggle-password i{
+    position: absolute;
+    right: 5%;
+    top: 35%;
+}
+.password-container{
+    width: 100%;
+    position: relative;
+}
+
+/*Custom  */
+
