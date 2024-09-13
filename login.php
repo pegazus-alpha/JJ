@@ -1,10 +1,11 @@
 <?php
+
 // Démarrer la session
 session_start();
 
 // Inclure la connexion à la base de données
 include "./ConnexionDb.php";
-connexionDb($HostName, $UserName, $Passeword, $DataBase);
+$conn=connexionDb($HostName, $UserName, $Passeword, $DataBase);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Récupération des données POST
@@ -33,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             ];
 
             // Redirection vers le tableau de bord ou une autre page après connexion réussie
-            header("Location: dashboard.php");
+            header("Location: add_cer1.php");
             exit();
         } else {
             echo "Email ou mot de passe incorrect.";

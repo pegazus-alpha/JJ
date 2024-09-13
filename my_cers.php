@@ -68,7 +68,7 @@ if (empty($liked_cers)) {
                     <?php while ($row = $result->fetch_assoc()): ?>
                         <tr>
                             <td><?php echo htmlspecialchars($row['titre']); ?></td>
-                            <td><?php echo htmlspecialchars($row['specialite']); ?></td>
+                            <td><?php echo htmlspecialchars($row['domaine']); ?></td>
                             <td><?php echo htmlspecialchars($row['niveau']); ?></td>
                             <td><?php echo htmlspecialchars($row['date']); ?></td>
                             <td>

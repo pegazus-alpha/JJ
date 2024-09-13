@@ -1,4 +1,6 @@
 <?php
+// Démarrer la session
+session_start();
 
 // Connexion à la base de données
 $servername = "localhost";
@@ -13,19 +15,27 @@ if ($conn->connect_error) {
 
 // Vérifier si le formulaire est soumis
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Récupérer l'ID de l'utilisateur via la session
+    if (isset($_SESSION['user'])) {
+        $user_id = $_SESSION['user']['id'];
+    } else {
+        die("Utilisateur non connecté.");
+    }
+
     $titre = $_POST['titre'];
     $niveau = $_POST['niveau'];
     $description = $_POST['description'];
     $specialites = isset($_POST['specialite']) ? $_POST['specialite'] : [];
     $fichier = $_FILES['fichier'];
-    $image = $_FILES['image']; // New image field
+    $image = $_FILES['image']; // Nouveau champ d'image
 
-    // Chemin pour stocker l'image
+    // Chemin pour stocker l'image avec un nom unique
     $imagePath = '';
     if (isset($image) && $image['error'] == 0) {
         $target_dir = "uploads/images/";
-        $imagePath = $target_dir . basename($image["name"]);
-        $imageFileType = strtolower(pathinfo($imagePath, PATHINFO_EXTENSION));
+        $imageFileType = strtolower(pathinfo($image["name"], PATHINFO_EXTENSION));
+        $uniqueImageName = uniqid() . '.' . $imageFileType; // Générer un nom unique pour l'image
+        $imagePath =$uniqueImageName;
 
         // Vérifier si l'image est un fichier valide
         $check = getimagesize($image["tmp_name"]);
@@ -33,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Vérifier les extensions autorisées
             if (in_array($imageFileType, ['jpg', 'png', 'jpeg', 'gif'])) {
                 if (move_uploaded_file($image["tmp_name"], $imagePath)) {
-                    echo "L'image " . basename($image["name"]) . " a été téléchargée.";
+                    echo "L'image " . $uniqueImageName . " a été téléchargée.";
                 } else {
                     echo "Erreur lors du téléchargement de l'image.";
                 }
@@ -45,16 +55,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    // Préparer et exécuter la requête d'insertion
-    $stmt = $conn->prepare("INSERT INTO cer (titre, niveau, description, image) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("siss", $titre, $niveau, $description, $imagePath);
+    // Chemin pour stocker le fichier CER avec un nom unique
+    $filePath = '';
+    if (isset($fichier) && $fichier['error'] == 0) {
+        $target_dir = "uploads/";
+        $fileType = strtolower(pathinfo($fichier["name"], PATHINFO_EXTENSION));
+        $uniqueFileName = uniqid() . '.' . $fileType; // Générer un nom unique pour le fichier
+        $filePath =$uniqueFileName;
+
+        // Vérifier les types de fichiers autorisés
+        if (in_array($fileType, ['pdf', 'docx'])) {
+            if (move_uploaded_file($fichier["tmp_name"], $filePath)) {
+                echo "Le fichier " . $uniqueFileName . " a été téléchargé.";
+            } else {
+                echo "Erreur lors du téléchargement du fichier.";
+            }
+        } else {
+            echo "Seuls les fichiers PDF et DOCX sont autorisés.";
+        }
+    }
+
+    // Préparer et exécuter la requête d'insertion dans la table 'cer'
+    $stmt = $conn->prepare("INSERT INTO cer (titre, niveau, user, description, image, fichier) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("siisss", $titre, $niveau, $user_id, $description, $imagePath, $filePath);
 
     if ($stmt->execute()) {
         $cer_id = $stmt->insert_id;
 
-        // Insérer les spécialités dans la table tags
+        // Insérer les spécialités dans la table 'tags'
         foreach ($specialites as $specialite) {
-            $stmt = $conn->prepare("INSERT INTO tags (cer_id, specialite_id) VALUES (?, ?)");
+            $stmt = $conn->prepare("INSERT INTO tags (cer, domaine) VALUES (?, ?)");
             $stmt->bind_param("ii", $cer_id, $specialite);
             $stmt->execute();
         }

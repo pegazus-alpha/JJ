@@ -30,7 +30,7 @@ $total_pages = ceil($total_items / $limit);
 
 // Requête pour obtenir les CERs avec pagination, en joignant la table user pour obtenir les noms et prénoms
 $sql = "SELECT cer.id, cer.titre AS titre, cer.description, cer.user,cer.image As _image, domaine.nom AS domaine, cer.niveau,
-               user.nom AS author_nom, user.prenom AS author_prenom
+               cer.fichier AS fichier,user.nom AS author_nom, user.prenom AS author_prenom
         FROM cer
         JOIN tags ON cer.id = tags.cer
         JOIN domaine ON tags.domaine = domaine.id
@@ -133,7 +133,15 @@ $domaine_result = $conn->query($domaine_sql);
                             </div>
                                 <h3><?php echo htmlspecialchars($row['titre']); ?></h3>
                                 <p><?php echo htmlspecialchars($row['description']); ?></p>
-                                <button class="consult">Consulter le CER</button>
+                                <!-- <button class="consult">Consulter le CER</button> -->
+                                 <!-- Bouton pour consulter le fichier associé -->
+                                <?php if (!empty($row['fichier'])): ?>
+                                    <a href="uploads/<?php echo htmlspecialchars($row['fichier']); ?>" target="_blank">
+                                        <button class="consult">Consulter le CER</button>
+                                    </a>
+                                <?php else: ?>
+                                    <button class="consult" disabled>Aucun fichier disponible</button>
+                                <?php endif; ?>
                             </div>
                         </div>
                     <?php endwhile; ?>

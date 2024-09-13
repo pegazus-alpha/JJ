@@ -32,7 +32,7 @@
             <button class="all-cer">Voir plus</button>
         </div>
         
-        <div class="cer-cards">
+        <div class="cer-cards-row">
             <?php
             // Connect to the database
             $conn = new mysqli('localhost', 'root', 'maxime', 'archiva');
@@ -55,7 +55,7 @@
                     $description = $row["description"];
                     ?>
                     <div class="cer-card">
-                        <div class="cer-card__image"><img src="assets/images/<?php echo ""; ?>" alt="<?php echo $title; ?>"></div>
+                        <div class="cer-card__image"><img src="assets/images/<?php echo $row["image"]; ?>" alt="<?php echo $title; ?>"></div>
                         <div class="cer-info">
                             <div class="author">
                                 <i class="fa-regular fa-heart"></i>

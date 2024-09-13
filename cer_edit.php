@@ -21,9 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $titre = $_POST['titre'];
     $niveau = $_POST['niveau'];
     $specialites = isset($_POST['specialite']) ? $_POST['specialite'] : array(); // Gérer le tableau de spécialités
-    $specialites_str = implode(", ", $specialites); // Fusionner les spécialités en une chaîne
     $description = $_POST['description'];
-    
+
     // Gestion du fichier uploadé (si un nouveau fichier est téléchargé)
     if (isset($_FILES['fichier']) && $_FILES['fichier']['error'] == 0) {
         $file_name = $_FILES['fichier']['name'];
@@ -61,9 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Mise à jour des informations dans la base de données
-    $sql = "UPDATE cer SET titre = ?, niveau = ?, domaine = ?, description = ?, fichier = ? WHERE id = ?";
+    $sql = "UPDATE cer SET titre = ?, niveau = ?, description = ?, fichier = ? WHERE id = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssssi", $titre, $niveau, $specialites_str, $description, $fichier, $cer_id);
+    $stmt->bind_param("ssssi", $titre, $niveau, $description, $fichier, $cer_id);
 
     if ($stmt->execute()) {
         echo "CER mis à jour avec succès.";
@@ -72,15 +71,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Mise à jour des tags dans la table 'tags' (supprimer les anciens et ajouter les nouveaux)
-    $sql_delete_tags = "DELETE FROM tags WHERE cer_id = ?";
+    $sql_delete_tags = "DELETE FROM tags WHERE cer = ?";
     $stmt = $conn->prepare($sql_delete_tags);
     $stmt->bind_param("i", $cer_id);
     $stmt->execute();
 
     foreach ($specialites as $specialite) {
-        $sql_insert_tag = "INSERT INTO tags (cer_id, domaine) VALUES (?, ?)";
+        // On suppose que 'specialite' contient les 'specialite_id' et non les noms
+        $sql_insert_tag = "INSERT INTO tags (cer_id, specialite_id) VALUES (?, ?)";
         $stmt = $conn->prepare($sql_insert_tag);
-        $stmt->bind_param("is", $cer_id, $specialite);
+        $stmt->bind_param("ii", $cer_id, $specialite);
         $stmt->execute();
     }
 
